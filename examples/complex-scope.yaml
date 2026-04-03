@@ -1,0 +1,53 @@
+# Complex scope example — multi-phase internal/external engagement
+version: 1
+
+engagement:
+  name: "MegaCorp Red Team Assessment 2026"
+  id: "RT-2026-007"
+  start: "2026-03-01"
+  end: "2026-05-31"
+
+scope:
+  include:
+    # External perimeter
+    - "198.51.100.0/24"
+    - "203.0.113.0/25"
+    - "2001:db8:1::/48"
+    
+    # Internal networks
+    - "10.10.0.0/16"
+    - "172.16.0.0/12"
+    
+    # Web properties
+    - "*.megacorp.com"
+    - "*.megacorp.io"
+    - "megacorp.com"
+    - "megacorp.io"
+    
+    # Specific hosts
+    - "vpn.megacorp.com"
+    - "citrix.megacorp.com"
+
+  exclude:
+    # Production databases — NEVER test
+    - "10.10.1.10"
+    - "10.10.1.11"
+    - "10.10.1.12"
+    
+    # SCADA/ICS network — explicitly out of scope
+    - "10.10.200.0/24"
+    
+    # Executive mail
+    - "mail.megacorp.com"
+    - "exchange.megacorp.com"
+    
+    # Partner-facing portal (shared infrastructure)
+    - "partners.megacorp.com"
+
+notes: |
+  Phase 1 (Mar): External only — 198.51.100.0/24 and web properties
+  Phase 2 (Apr): Internal pivot from assumed breach position
+  Phase 3 (May): Full red team with social engineering
+  
+  Emergency stop: Call SOC at +1-555-0199
+  Rules of engagement doc: ROE-RT-2026-007-v2.pdf

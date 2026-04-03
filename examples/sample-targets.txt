@@ -1,0 +1,18 @@
+# Sample target list for testing with basic-scope.yaml
+# Run: scopecheck validate --scope examples/basic-scope.yaml --file examples/sample-targets.txt
+
+# In scope
+203.0.113.50
+203.0.113.100
+www.acme.com
+app.acme.com
+api.acme.com
+
+# Excluded
+203.0.113.1
+mail.acme.com
+
+# Out of scope
+8.8.8.8
+evil.attacker.com
+192.168.1.1

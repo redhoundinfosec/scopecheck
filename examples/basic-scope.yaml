@@ -1,0 +1,20 @@
+# Basic scope example — small external pentest
+version: 1
+
+engagement:
+  name: "Acme Corp External Pentest"
+  id: "EXT-2026-042"
+  start: "2026-04-01"
+  end: "2026-04-30"
+
+scope:
+  include:
+    - "203.0.113.0/24"
+    - "www.acme.com"
+    - "*.acme.com"
+
+  exclude:
+    - "203.0.113.1"        # Gateway — do not test
+    - "mail.acme.com"      # Mail server excluded per client request
+
+notes: "Testing window: 00:00-06:00 UTC weekdays only. Emergency contact: ops@acme.com"
