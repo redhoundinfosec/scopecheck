@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="social-preview.png" alt="SCOPECHECK" width="640">
+</p>
+
 # scopecheck
 
 **Validate targets against authorized engagement scope before any offensive action.**
@@ -307,3 +311,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
 ## Security
 
 See [SECURITY.md](SECURITY.md).
+---
+
+> **Built by [Red Hound InfoSec](https://redhound.us)** — Penetration testing, attack surface analysis, and security consulting.
+>
+> [Visit redhound.us](https://redhound.us) | [Read the blog](https://redhound.us/blog.html) | [Book a consultation](https://redhound.us/#contact)
