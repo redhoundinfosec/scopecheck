@@ -45,7 +45,7 @@ func validate(s *Scope) error {
 // TemplateYAML returns a template scope file as a string.
 func TemplateYAML() string {
 	return `# scopecheck scope definition
-# Documentation: https://github.com/redhoundinfosec/scopecheck/docs/scope-file-format.md
+# Documentation: https://github.com/redhoundinfosec/scopecheck/blob/main/docs/scope-file-format.md
 version: 1
 
 engagement:
