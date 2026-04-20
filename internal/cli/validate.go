@@ -126,6 +126,14 @@ func collectTargets(gf globalFlags) ([]string, error) {
 		targets = append(targets, lines...)
 	}
 
+	// Dedupe while preserving order (e.g., when combining --file + inline targets)
+	targets = dedupeTargets(targets)
+
+	// Limit target count to reduce accidental misuse and resource exhaustion
+	if err := validateTargetCount(targets); err != nil {
+		return nil, err
+	}
+
 	return targets, nil
 }
 
@@ -156,4 +164,26 @@ func scanLines(r *os.File) []string {
 		}
 	}
 	return lines
+}
+
+func dedupeTargets(targets []string) []string {
+	out := make([]string, 0, len(targets))
+	seen := make(map[string]struct{}, len(targets))
+	for _, t := range targets {
+		if _, ok := seen[t]; ok {
+			continue
+		}
+		seen[t] = struct{}{}
+		out = append(out, t)
+	}
+	return out
+}
+
+func validateTargetCount(targets []string) error {
+	// Keep this intentionally conservative to avoid accidental large-batch validation from huge stdin input.
+	const maxTargets = 10000
+	if len(targets) > maxTargets {
+		return fmt.Errorf("too many targets (%d); split input into smaller batches", len(targets))
+	}
+	return nil
 }
