@@ -72,7 +72,9 @@ func runValidate(gf globalFlags) int {
 		} else {
 			defer logger.Close()
 			for _, r := range results {
-				_ = logger.Log(s.Engagement.Name, r.Target, r.StatusStr, r.MatchedBy, gf.scopeFile)
+				if err := logger.Log(s.Engagement.Name, r.Target, r.StatusStr, r.MatchedBy, gf.scopeFile); err != nil {
+					fmt.Fprintf(os.Stderr, "Warning: could not write audit log entry for %q: %v\n", r.Target, err)
+				}
 			}
 		}
 	}
@@ -147,7 +149,10 @@ func readTargetFile(path string) ([]string, error) {
 }
 
 func readStdin() ([]string, error) {
-	info, _ := os.Stdin.Stat()
+	info, err := os.Stdin.Stat()
+	if err != nil {
+		return nil, fmt.Errorf("reading stdin metadata: %w", err)
+	}
 	if (info.Mode() & os.ModeCharDevice) != 0 {
 		return nil, fmt.Errorf("--stdin specified but no data piped to stdin")
 	}
