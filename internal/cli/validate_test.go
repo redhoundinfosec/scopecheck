@@ -1,6 +1,10 @@
 package cli
 
-import "testing"
+import (
+	"errors"
+	"testing"
+)
+
 
 func TestDedupeTargetsPreservesOrder(t *testing.T) {
 	in := []string{"b", "a", "b", "c", "a"}
@@ -16,6 +20,17 @@ func TestDedupeTargetsPreservesOrder(t *testing.T) {
 		}
 	}
 }
+
+func TestScanLinesReturnsErrorOnReadFailure(t *testing.T) {
+	r := errReader{}
+	if _, err := scanLines(&r); err == nil {
+		t.Fatalf("expected error")
+	}
+}
+
+type errReader struct{}
+
+func (errReader) Read([]byte) (int, error) { return 0, errors.New("boom") }
 
 func TestValidateTargetCount(t *testing.T) {
 	var targets []string

@@ -3,6 +3,7 @@ package cli
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 	"time"
@@ -114,7 +115,7 @@ func collectTargets(gf globalFlags) ([]string, error) {
 	if fromFile != "" {
 		lines, err := readTargetFile(fromFile)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("reading targets from file: %w", err)
 		}
 		targets = append(targets, lines...)
 	}
@@ -123,7 +124,7 @@ func collectTargets(gf globalFlags) ([]string, error) {
 	if fromStdin {
 		lines, err := readStdin()
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("reading targets from stdin: %w", err)
 		}
 		targets = append(targets, lines...)
 	}
@@ -145,7 +146,12 @@ func readTargetFile(path string) ([]string, error) {
 		return nil, fmt.Errorf("opening target file: %w", err)
 	}
 	defer f.Close()
-	return scanLines(f), nil
+
+	lines, err := scanLines(f)
+	if err != nil {
+		return nil, err
+	}
+	return lines, nil
 }
 
 func readStdin() ([]string, error) {
@@ -156,10 +162,14 @@ func readStdin() ([]string, error) {
 	if (info.Mode() & os.ModeCharDevice) != 0 {
 		return nil, fmt.Errorf("--stdin specified but no data piped to stdin")
 	}
-	return scanLines(os.Stdin), nil
+	lines, err := scanLines(os.Stdin)
+	if err != nil {
+		return nil, err
+	}
+	return lines, nil
 }
 
-func scanLines(r *os.File) []string {
+func scanLines(r io.Reader) ([]string, error) {
 	var lines []string
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
@@ -168,7 +178,10 @@ func scanLines(r *os.File) []string {
 			lines = append(lines, line)
 		}
 	}
-	return lines
+	if err := scanner.Err(); err != nil {
+		return nil, fmt.Errorf("reading input: %w", err)
+	}
+	return lines, nil
 }
 
 func dedupeTargets(targets []string) []string {
